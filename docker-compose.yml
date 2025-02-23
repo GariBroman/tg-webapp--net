@@ -14,7 +14,9 @@ services:
       - ADMIN_TELEGRAM_ID=${ADMIN_TELEGRAM_ID}
       - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
       - NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
+      - NEXT_PUBLIC_WEBAPP_URL=https://tg-webapp-net-production.up.railway.app
       - HOSTNAME=0.0.0.0
+      - PORT=3000
       - SKIP_ENV_VALIDATION=1
     command: >
       sh -c "

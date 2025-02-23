@@ -32,6 +32,7 @@ export const blurImage = (src: string, width: number, height: number) =>
 export const formatPrice = (price: string) => parseFloat(price).toLocaleString("en-US");
 
 export function getBaseUrl() {
+  if (process.env.NEXT_PUBLIC_WEBAPP_URL) return process.env.NEXT_PUBLIC_WEBAPP_URL;
   if (process.env.TUNNEL) return `https://${process.env.TUNNEL}`;
   if (typeof window !== "undefined") return window.location.origin;
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;

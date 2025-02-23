@@ -23,6 +23,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string().optional().default("https://eu.i.posthog.com"),
+    NEXT_PUBLIC_WEBAPP_URL: z.string().optional(),
   },
 
   /**
@@ -36,6 +37,7 @@ export const env = createEnv({
     ADMIN_TELEGRAM_ID: process.env.ADMIN_TELEGRAM_ID,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    NEXT_PUBLIC_WEBAPP_URL: process.env.NEXT_PUBLIC_WEBAPP_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

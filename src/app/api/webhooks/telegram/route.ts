@@ -837,18 +837,17 @@ export const GET = async (req: Request) => {
   logWithTime("GET webhook request", { 
     url: req.url,
     setWebhook,
-    baseUrl: getBaseUrl()
+    baseUrl: "https://tg-webapp-net-production.up.railway.app"
   });
 
   if (setWebhook === "true") {
-    const webhookUrl = `${getBaseUrl()}/api/webhooks/telegram?secret_hash=${SECRET_HASH}`;
+    const webhookUrl = "https://tg-webapp-net-production.up.railway.app/api/webhooks/telegram?secret_hash=" + SECRET_HASH;
     logWithTime("Setting webhook to", { webhookUrl });
     
     try {
-      await bot.telegram.setWebhook(webhookUrl, {
-        drop_pending_updates: true,
-      });
+      await bot.telegram.setWebhook(webhookUrl);
       logWithTime("Webhook set successfully");
+      return Response.json({ ok: true, message: "Webhook set successfully" });
     } catch (error) {
       logWithTime("Error setting webhook", error);
       return Response.json({ error: "Failed to set webhook", details: error }, { status: 500 });
