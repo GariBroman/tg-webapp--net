@@ -82,7 +82,7 @@ export const shopRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
-        price: z.number(),
+        price: z.string(),
         imageUrl: z.string(),
         description: z.string().optional(),
         stock: z.number().optional(),
@@ -201,7 +201,7 @@ export const shopRouter = createTRPCRouter({
             label: `Purchase `,
             amount: cart.reduce(
               (acc, i) =>
-                acc + (i.product.price - i.product.discount) * i.quantity,
+                acc + (parseFloat(i.product.price) - parseFloat(i.product.discount)) * i.quantity,
               0,
             ),
           },

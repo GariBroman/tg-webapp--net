@@ -224,7 +224,7 @@ const ProductListItem = ({ product, single }: ProductListItemProps) => {
       >
         <div className="mt-2 flex items-center">
           <p className="text-lg font-medium text-muted-foreground">
-            ⭐ {formatPrice(product.price - product.discount)}
+            ⭐ {formatPrice((parseFloat(product.price) - parseFloat(product.discount)).toString())}
           </p>
           {product.discount > 0 && (
             <p className="ml-2 rounded-md bg-red-100 px-2 py-1 text-xs font-semibold text-red-500 line-through">

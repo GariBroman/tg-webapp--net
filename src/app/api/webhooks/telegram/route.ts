@@ -13,7 +13,7 @@ const SECRET_HASH = "32e58fbahey833349df3383dc910e181";
 // Состояние для добавления товара
 interface ProductState {
   name?: string;
-  price?: number;
+  price?: string;
   imageUrl?: string;
   description?: string;
   stock?: number;
@@ -132,7 +132,7 @@ async function handleProductStep(ctx: Context) {
         );
         return;
       }
-      state.price = price;
+      state.price = price.toString();
       state.step = 'image';
       await ctx.reply('Теперь отправьте фотографию товара:', 
         Markup.keyboard([['❌ Отменить']])
@@ -199,6 +199,7 @@ async function handleProductStep(ctx: Context) {
             stock: state.stock || 999999,
             hidden: false,
             instantBuy: true,
+            discount: "0"
           }).returning();
 
           if (!product[0]) {
@@ -242,7 +243,7 @@ async function handleProductStep(ctx: Context) {
               await ctx.reply('Пожалуйста, укажите корректную цену (положительное число)');
               return;
             }
-            updateData.price = price;
+            updateData.price = price.toString();
             break;
           case 'stock':
             const stock = parseInt(ctx.message.text);
@@ -334,7 +335,7 @@ bot.command("edit_product", async (ctx) => {
           await ctx.reply("Invalid price value");
           return;
         }
-        updateData.price = price;
+        updateData.price = price.toString();
         break;
       case "imageUrl":
         if (!value) {
@@ -629,7 +630,7 @@ bot.on("message", async (ctx) => {
         });
         return;
 
-      case '�� Открыть магазин':
+      case '🛍 Открыть магазин':
         const baseUrl = getBaseUrl();
         await ctx.reply('Переходим в магазин...', {
           reply_markup: {

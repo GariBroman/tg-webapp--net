@@ -1,7 +1,7 @@
 FROM node:20-alpine AS base
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm and netcat
+RUN apk add --no-cache netcat-openbsd && npm install -g pnpm
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -21,14 +21,15 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+ENV SKIP_ENV_VALIDATION=1
 
 # Copy necessary files
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build with SKIP_ENV_VALIDATION
-RUN SKIP_ENV_VALIDATION=1 pnpm run build
+# Build the application
+RUN pnpm run build
 
 EXPOSE 3000
 
-CMD ["pnpm", "start"] 
+CMD ["pnpm", "start:migrate"] 

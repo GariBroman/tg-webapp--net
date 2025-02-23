@@ -49,7 +49,7 @@ export function CartDropdown() {
                 {cart
                   ?.map(
                     (item) =>
-                      (item.product.price - item.product.discount) *
+                      (parseFloat(item.product.price) - parseFloat(item.product.discount)) *
                       item.quantity,
                   )
                   .reduce((a, b) => a + b, 0)}
@@ -81,7 +81,7 @@ export function CartDropdown() {
               </div>
               <p className="whitespace-nowrap text-sm font-medium leading-none">
                 ⭐{" "}
-                {(item.product.price - item.product.discount) * item.quantity}
+                {((parseFloat(item.product.price) - parseFloat(item.product.discount)) * item.quantity).toString()}
               </p>
             </Link>
           ))}

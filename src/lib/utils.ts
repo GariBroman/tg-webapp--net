@@ -29,7 +29,7 @@ const toBase64 = (str: string) =>
 export const blurImage = (src: string, width: number, height: number) =>
   `data:image/svg+xml;base64,${toBase64(shimmer(width, height))}`;
 
-export const formatPrice = (price: number) => price.toLocaleString("en-US");
+export const formatPrice = (price: string) => parseFloat(price).toLocaleString("en-US");
 
 export function getBaseUrl() {
   if (process.env.TUNNEL) return `https://${process.env.TUNNEL}`;

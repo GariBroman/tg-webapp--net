@@ -5,10 +5,10 @@ import { eq } from "drizzle-orm";
 const command = process.argv[2];
 const args = process.argv.slice(3);
 
-async function addProduct(name: string, price: number, imageUrl: string, description?: string) {
+async function addProduct(name: string, price: string, imageUrl: string, description?: string) {
   const product = await db.insert(products).values({
     name,
-    price: price.toString(), // Convert number to string for decimal type
+    price,
     images: [imageUrl],
     description,
     stock: 999999, // Unlimited for digital goods
@@ -47,13 +47,12 @@ async function main() {
         process.exit(1);
       }
 
-      const price = parseInt(priceStr);
-      if (isNaN(price)) {
+      if (isNaN(parseFloat(priceStr))) {
         console.log("Error: price must be a number");
         process.exit(1);
       }
 
-      await addProduct(name, price, imageUrl, description);
+      await addProduct(name, priceStr, imageUrl, description);
       break;
 
     case "list":
