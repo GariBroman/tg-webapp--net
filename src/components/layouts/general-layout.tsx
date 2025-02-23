@@ -7,10 +7,10 @@ import useTelegramInitData from "~/hooks/use-telegram-init-data";
 import { PawPrint, Store } from "lucide-react";
 import { CartDropdown } from "./cart-dropdown";
 import { api } from "~/trpc/react";
-import { utils } from "~/trpc/react";
 
 const GeneralLayout = ({ children }: PropsWithChildren) => {
   const { data: user } = api.tg.getUser.useQuery();
+  const utils = api.useUtils();
 
   const [shouldShowAlert, setShouldShowAlert] = useState<string | null>(null);
   const { start_param, user: telegramUser } = useTelegramInitData();
@@ -33,7 +33,7 @@ const GeneralLayout = ({ children }: PropsWithChildren) => {
 
     setShouldShowAlert(`You've activated the code: ${start_param}`);
     return;
-  }, [start_param, user?.telegramId]);
+  }, [start_param, user?.telegramId, user?.usedCodes, user?.activatedCodes]);
 
   useEffect(() => {
     if (shouldShowAlert) {
@@ -43,10 +43,10 @@ const GeneralLayout = ({ children }: PropsWithChildren) => {
   }, [shouldShowAlert]);
 
   useEffect(() => {
-    if (user.activatedCodes?.length || user?.usedCodes?.length) {
+    if (((user?.activatedCodes?.length ?? 0) > 0) || ((user?.usedCodes?.length ?? 0) > 0)) {
       void utils.shop.products.invalidate();
     }
-  }, [user.activatedCodes, user?.usedCodes, utils.shop.products]);
+  }, [user?.activatedCodes, user?.usedCodes, utils.shop.products]);
 
   return (
     <>

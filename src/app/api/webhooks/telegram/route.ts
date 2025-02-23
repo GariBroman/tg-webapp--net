@@ -64,7 +64,7 @@ async function isAdmin(ctx: Context): Promise<boolean> {
     user = await db.insert(users).values({
       id: crypto.randomUUID(),
       telegramId: telegramId,
-      chatId: ctx.chat?.id?.toString() || telegramId,
+      chatId: ctx.chat?.id?.toString() ?? telegramId,
       name: ctx.from.first_name,
       role: "admin"
     }).returning().then(users => users[0]);
@@ -232,7 +232,7 @@ async function handleProductStep(ctx: Context) {
       if (!state.editField || !state.editProductId) return;
 
       try {
-        let updateData: Partial<typeof products.$inferInsert> = {};
+        const updateData: Partial<typeof products.$inferInsert> = {};
         
         switch (state.editField) {
           case 'name':
@@ -277,7 +277,7 @@ async function handleProductStep(ctx: Context) {
         logWithTime("[EDIT] Product updated successfully", updated[0]);
         
         await ctx.reply(
-          `✅ Товар успешно обновлен!\n\nID: ${updated[0].id}\nНазвание: ${updated[0].name}\nЦена: ${updated[0].price}\nКоличество: ${updated[0].stock === 999999 ? "Безлимитно" : updated[0].stock}`,
+          `✅ Товар успешно обновлен!\n\nID: ${updated[0].id}\nНазвание: ${updated[0].name ?? "Без названия"}\nЦена: ${updated[0].price}\nКоличество: ${updated[0].stock === 999999 ? "Безлимитно" : updated[0].stock}`,
           Markup.removeKeyboard()
         );
       } catch (error) {
