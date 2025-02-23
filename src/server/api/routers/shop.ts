@@ -7,7 +7,7 @@ import { bot } from "~/server/telegram";
 import { TRPCError } from "@trpc/server";
 
 // Функция для логирования с timestamp
-function logWithTime(message: string, data?: any) {
+function logWithTime(message: string, data?: unknown) {
   const timestamp = new Date().toISOString();
   console.log(`[${timestamp}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
 }
@@ -45,8 +45,8 @@ export const shopRouter = createTRPCRouter({
           try {
             if (i.instantBuy) {
               logWithTime("[SHOP] Creating invoice link for product", { productId: i.id });
-              const productName = i.name || 'Unnamed product';
-              const productDescription = i.description || productName;
+              const productName = i.name ?? 'Unnamed product';
+              const productDescription = i.description ?? productName;
               const link = await bot.telegram.createInvoiceLink({
                 title: productName,
                 description: productDescription,

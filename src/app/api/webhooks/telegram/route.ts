@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
-import { Context } from "telegraf";
+import type { Context } from "telegraf";
+import type { Update } from "@telegraf/types";
 import { getBaseUrl } from "~/lib/utils";
 import { db } from "~/server/db";
 import { products, users } from "~/server/db/schema";
@@ -25,7 +26,7 @@ interface ProductState {
 const productStates = new Map<number, ProductState>();
 
 // Функция для логирования с timestamp
-function logWithTime(message: string, data?: any) {
+function logWithTime(message: string, data?: unknown) {
   const timestamp = new Date().toISOString();
   console.log(`[${timestamp}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
 }
@@ -409,8 +410,9 @@ bot.command("list_products", async (ctx) => {
   try {
     const allProducts = await db.select().from(products);
     const productList = allProducts.map(p => {
-      const name = p.name || "Unnamed product";
-      return `ID: ${p.id}\nName: ${name}\nPrice: ${p.price}\nHidden: ${p.hidden}\n${p.description ? `Description: ${p.description}\n` : ""}`;
+      const name = p.name ?? "Unnamed product";
+      const productDescription = p.description ?? name;
+      return `ID: ${p.id}\nName: ${name}\nPrice: ${p.price}\nHidden: ${p.hidden}\n${productDescription ? `Description: ${productDescription}\n` : ""}`;
     }).join("\n---\n");
 
     if (allProducts.length === 0) {
@@ -658,8 +660,9 @@ bot.on("message", async (ctx) => {
         try {
           const allProducts = await db.select().from(products);
           const productList = allProducts.map(p => {
-            const name = p.name || "Unnamed product";
-            return `ID: ${p.id}\nName: ${name}\nPrice: ${p.price}\nHidden: ${p.hidden}\n${p.description ? `Description: ${p.description}\n` : ""}`;
+            const name = p.name ?? "Unnamed product";
+            const productDescription = p.description ?? name;
+            return `ID: ${p.id}\nName: ${name}\nPrice: ${p.price}\nHidden: ${p.hidden}\n${productDescription ? `Description: ${productDescription}\n` : ""}`;
           }).join("\n---\n");
 
           if (allProducts.length === 0) {
@@ -881,7 +884,7 @@ export const POST = async (req: Request) => {
   }
 
   try {
-    const body = await req.json();
+    const body = await req.json() as Update;
     logWithTime("Webhook update received", body);
     await bot.handleUpdate(body);
     logWithTime("Update handled successfully");

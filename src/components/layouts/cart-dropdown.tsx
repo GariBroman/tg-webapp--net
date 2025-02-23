@@ -28,7 +28,7 @@ export function CartDropdown() {
         setInvoiceLink(invoiceLink);
       });
     }
-  }, [open]);
+  }, [open, cart?.length, getCartPaymentLink]);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>

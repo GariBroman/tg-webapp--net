@@ -7,6 +7,7 @@ import useTelegramInitData from "~/hooks/use-telegram-init-data";
 import { PawPrint, Store } from "lucide-react";
 import { CartDropdown } from "./cart-dropdown";
 import { api } from "~/trpc/react";
+import { utils } from "~/trpc/react";
 
 const GeneralLayout = ({ children }: PropsWithChildren) => {
   const { data: user } = api.tg.getUser.useQuery();
@@ -40,6 +41,12 @@ const GeneralLayout = ({ children }: PropsWithChildren) => {
       setShouldShowAlert(null);
     }
   }, [shouldShowAlert]);
+
+  useEffect(() => {
+    if (user.activatedCodes?.length || user?.usedCodes?.length) {
+      void utils.shop.products.invalidate();
+    }
+  }, [user.activatedCodes, user?.usedCodes, utils.shop.products]);
 
   return (
     <>
