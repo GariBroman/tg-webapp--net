@@ -118,6 +118,10 @@ const ProductItemActions: React.FC<{
   const { cartItem, addToCart, removeFromCart, updateCartItem } =
     useProductActions(product);
 
+  const price = parseFloat(product.price);
+  const MAX_STARS = 8000;
+  const paymentsCount = Math.ceil(price / MAX_STARS);
+
   return (
     <div className="mt-2 flex items-center gap-2">
       {cartItem ? (
@@ -176,16 +180,23 @@ const ProductItemActions: React.FC<{
       ) : (
         <div className="flex w-full flex-col items-center gap-2">
           {product.link && product.stock === 999999 ? (
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                return (window.location.href = product.link ?? "");
-              }}
-              className={cn(buttonVariants({ variant: "default" }), "w-full")}
-            >
-              Instant Buy ⭐ {formatPrice(product.price)}
-            </Button>
+            <>
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  return (window.location.href = product.link ?? "");
+                }}
+                className={cn(buttonVariants({ variant: "default" }), "w-full")}
+              >
+                Instant Buy ⭐ {formatPrice(product.price)}
+              </Button>
+              {price > MAX_STARS && (
+                <p className="text-xs text-muted-foreground">
+                  Will be split into {paymentsCount} payments of ⭐ {formatPrice(MAX_STARS.toString())} each
+                </p>
+              )}
+            </>
           ) : (
             <Button
               isLoading={addToCart.isPending}
@@ -197,7 +208,7 @@ const ProductItemActions: React.FC<{
                 return addToCart.mutate({ productId: product.id, quantity: 1 });
               }}
             >
-              Add to cart
+              Buy ⭐ {formatPrice(product.price)}
             </Button>
           )}
         </div>

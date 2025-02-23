@@ -45,7 +45,7 @@ export function CartDropdown() {
           {cart?.length ? (
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">
-                Cart total: ⭐{" "}
+                Total: ⭐{" "}
                 {cart
                   ?.map(
                     (item) =>
@@ -60,7 +60,7 @@ export function CartDropdown() {
               </p>
             </div>
           ) : (
-            <p className="text-sm font-medium leading-none">Your cart</p>
+            <p className="text-sm font-medium leading-none">Shopping Cart</p>
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

@@ -5,6 +5,7 @@ import { cartItems, products } from "~/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { bot } from "~/server/telegram";
 import { TRPCError } from "@trpc/server";
+import { formatPrice } from "~/lib/utils";
 
 // Функция для логирования с timestamp
 function logWithTime(message: string, data?: unknown) {
@@ -40,22 +41,34 @@ export const shopRouter = createTRPCRouter({
       const allProducts = await db.query.products.findMany();
       logWithTime("[SHOP] Products retrieved successfully", { count: allProducts.length });
 
+      const MAX_STARS = 8000;
+
       const itemsWithLinks = await Promise.all(
         allProducts.map(async (i) => {
           try {
             logWithTime("[SHOP] Creating invoice link for product", { productId: i.id });
             const productName = i.name ?? 'Unnamed product';
             const productDescription = i.description ?? productName;
+            const price = parseFloat(i.price);
+
+            // Если цена больше максимальной, создаем ссылку на первый платеж
+            const paymentAmount = price > MAX_STARS ? MAX_STARS : price;
+            const remainingPayments = price > MAX_STARS ? Math.ceil(price / MAX_STARS) - 1 : 0;
+            
+            const paymentDescription = remainingPayments > 0 
+              ? `${productDescription}\n\nPayment 1/${remainingPayments + 1} (⭐ ${formatPrice(paymentAmount.toString())} each)`
+              : productDescription;
+
             const link = await bot.telegram.createInvoiceLink({
               title: productName,
-              description: productDescription,
-              payload: `${i.id}-${ctx.user.id}`,
+              description: paymentDescription,
+              payload: `${i.id}-${ctx.user.id}-payment1`,
               provider_token: "",
               currency: "XTR",
               prices: [
                 {
                   label: productName,
-                  amount: Math.round(parseFloat(i.price))
+                  amount: Math.round(paymentAmount)
                 }
               ]
             });
