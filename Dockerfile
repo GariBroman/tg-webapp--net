@@ -20,6 +20,8 @@ WORKDIR /app
 ENV NODE_ENV production
 ENV NEXT_TELEMETRY_DISABLED 1
 
+# Copy env file and other necessary files
+COPY .env .env
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
