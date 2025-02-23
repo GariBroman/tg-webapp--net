@@ -30,6 +30,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME="0.0.0.0"
 ENV SKIP_ENV_VALIDATION=1
 ENV DATABASE_URL="postgresql://postgres:password@localhost:5432/postgres"
+ENV PGDATA=/var/lib/postgresql/data
 
 # Copy necessary files
 COPY --from=deps /app/node_modules ./node_modules
@@ -42,8 +43,12 @@ RUN pnpm run build
 RUN echo '#!/bin/sh\n\
 mkdir -p /run/postgresql\n\
 chown -R postgres:postgres /run/postgresql/\n\
-su postgres -c "pg_ctl -D /var/lib/postgresql/data start"\n\
-sleep 5\n\
+chown -R postgres:postgres $PGDATA\n\
+su postgres -c "pg_ctl -D $PGDATA start"\n\
+until su postgres -c "pg_isready"; do\n\
+  echo "Waiting for PostgreSQL to start..."\n\
+  sleep 1\n\
+done\n\
 su postgres -c "psql -c \\"ALTER USER postgres WITH PASSWORD '\''password'\'';\\""\n\
 pnpm start:migrate' > /app/start.sh && chmod +x /app/start.sh
 
