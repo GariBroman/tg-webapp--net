@@ -9,25 +9,21 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:password@postgres:5432/postgres
+      - DATABASE_URL=${DATABASE_URL}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - ADMIN_TELEGRAM_ID=${ADMIN_TELEGRAM_ID}
       - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
       - NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
-      - NEXT_PUBLIC_WEBAPP_URL=https://tg-webapp-net-production.up.railway.app
+      - NEXT_PUBLIC_WEBAPP_URL=${NEXT_PUBLIC_WEBAPP_URL}
       - HOSTNAME=0.0.0.0
-      - PORT=3000
       - SKIP_ENV_VALIDATION=1
     command: >
       sh -c "
-        echo 'Waiting for postgres...' &&
-        while ! nc -z postgres 5432; do sleep 1; done &&
-        echo 'PostgreSQL started' &&
-        pnpm start:migrate
+        echo 'Waiting for database...' &&
+        sleep 5 &&
+        pnpm db:migrate &&
+        pnpm start
       "
-    depends_on:
-      postgres:
-        condition: service_healthy
     restart: unless-stopped
 
   postgres:
