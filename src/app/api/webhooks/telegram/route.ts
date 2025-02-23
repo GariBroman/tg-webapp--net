@@ -884,12 +884,24 @@ export const POST = async (req: Request) => {
 
   try {
     const body = await req.json() as Update;
-    logWithTime("Webhook update received", body);
+    logWithTime("Webhook update received", { 
+      updateId: body.update_id,
+      messageText: 'message' in body && body.message && 'text' in body.message ? body.message.text : undefined,
+      callbackData: 'callback_query' in body && body.callback_query && 'data' in body.callback_query ? body.callback_query.data : undefined,
+      from: 'message' in body ? body.message?.from : 'callback_query' in body ? body.callback_query?.from : undefined
+    });
+    
     await bot.handleUpdate(body);
     logWithTime("Update handled successfully");
     return new Response("OK");
   } catch (error) {
-    logWithTime("Error handling webhook update", error);
+    logWithTime("Error handling webhook update", {
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      } : error
+    });
     return new Response(JSON.stringify({ error: "Failed to handle update", details: error }), { status: 500 });
   }
 };
