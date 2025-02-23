@@ -10,10 +10,14 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "dev": "next dev",
-    "tunnel": "ngrok http --domain=delicate-monkey-golden.ngrok-free.app 3000",
+    "tunnel": "ngrok http --domain=first-crane-allegedly.ngrok-free.app 3000",
+    "bot": "pnpm run dev & pnpm run tunnel",
     "lint": "next lint",
     "start": "next start",
-    "shadd": "bunx --bun shadcn-ui@latest add"
+    "shadd": "pnpm dlx shadcn-ui@latest add",
+    "docker:dev": "docker-compose up --build",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.1.0",
@@ -58,6 +62,7 @@
     "zod": "^3.23.3"
   },
   "devDependencies": {
+    "@opentelemetry/api": "1.8.0",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
     "@types/react": "^18.3.3",
@@ -72,6 +77,7 @@
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "tailwindcss": "^3.4.3",
+    "tsx": "^4.19.3",
     "typescript": "^5.5.3"
   },
   "ct3aMetadata": {

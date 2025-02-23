@@ -4,7 +4,6 @@
 
 ## [Документация](https://tg-webapp-nextra-docs.vercel.app/)
 
-[Демо](https://t.me/ffmemeswebappstagingbot/sample)
 
 ## Стек
 

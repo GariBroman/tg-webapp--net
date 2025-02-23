@@ -18,9 +18,9 @@ const ProductImage: React.FC<{
     {product.images?.[0] ? (
       <Image
         className="rounded"
-        src={product.images?.[0] ?? ""}
+        src={product.images[0]}
         alt={product.name ?? ""}
-        blurDataURL={blurImage(product.images?.[0] ?? "", 150, 150)}
+        blurDataURL={blurImage(product.images[0], 150, 150)}
         placeholder="blur"
         fill
         sizes="100vw"

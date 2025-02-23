@@ -43,7 +43,7 @@ const TapPage = () => {
 
   return (
     <div>
-      <h1 className="text-center text-2xl font-bold">Pawster Wombat</h1>
+      <h1 className="text-center text-2xl font-bold">MAXTON</h1>
 
       <Link
         href={topupLink ?? ""}

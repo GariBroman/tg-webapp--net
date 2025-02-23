@@ -9,7 +9,8 @@ export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
     TELEGRAM_BOT_TOKEN: z.string(),
-
+    PAYMENT_TOKEN: z.string().optional(),
+    ADMIN_TELEGRAM_ID: z.string(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -33,6 +34,8 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN,
+    PAYMENT_TOKEN: process.env.PAYMENT_TOKEN,
+    ADMIN_TELEGRAM_ID: process.env.ADMIN_TELEGRAM_ID,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },

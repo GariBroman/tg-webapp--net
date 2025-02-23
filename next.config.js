@@ -7,11 +7,31 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    // domains: ["images.unsplash.com", "core.telegram.org"],
     remotePatterns: [
       {
+        protocol: 'https',
         hostname: "core.telegram.org",
       },
+      {
+        protocol: 'https',
+        hostname: "i.ibb.co",
+      },
+      {
+        protocol: 'https',
+        hostname: "*.ibb.co",
+      },
+      {
+        protocol: 'https',
+        hostname: "t.me",
+      },
+      {
+        protocol: 'https',
+        hostname: "api.telegram.org",
+      },
+      {
+        protocol: 'https',
+        hostname: "file.telegram.org",
+      }
     ],
   },
 };

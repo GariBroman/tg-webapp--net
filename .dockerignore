@@ -1,0 +1,17 @@
+.git
+.gitignore
+node_modules
+.next
+.env
+.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.pem
+.vscode
+README.md
+.idea
+dist
+build
+coverage 
