@@ -8,12 +8,13 @@ const args = process.argv.slice(3);
 async function addProduct(name: string, price: number, imageUrl: string, description?: string) {
   const product = await db.insert(products).values({
     name,
-    price,
+    price: price.toString(), // Convert number to string for decimal type
     images: [imageUrl],
     description,
     stock: 999999, // Unlimited for digital goods
     hidden: false,
-    instantBuy: true
+    instantBuy: true,
+    discount: "0"
   }).returning();
 
   console.log("Added product:", product);

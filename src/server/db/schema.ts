@@ -65,7 +65,7 @@ export const promocodes = createTable("promocodes", {
 });
 
 export const products = createTable("products", {
-  id: integer("id").primaryKey(),
+  id: serial("id").primaryKey(),
   name: text("name").notNull().default("Unnamed product"),
   description: text("description"),
   price: decimal("price").notNull(),
