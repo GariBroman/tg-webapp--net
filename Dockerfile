@@ -39,18 +39,36 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
-# Create start script
+# Create start script with detailed logging
 RUN echo '#!/bin/sh\n\
+set -x\n\
+echo "[DEBUG] Creating PostgreSQL directories..."\n\
 mkdir -p /run/postgresql\n\
+ls -la /run/postgresql\n\
+\n\
+echo "[DEBUG] Setting PostgreSQL permissions..."\n\
 chown -R postgres:postgres /run/postgresql/\n\
 chown -R postgres:postgres $PGDATA\n\
-su postgres -c "pg_ctl -D $PGDATA start"\n\
-until su postgres -c "pg_isready"; do\n\
-  echo "Waiting for PostgreSQL to start..."\n\
+ls -la /run/postgresql\n\
+ls -la $PGDATA\n\
+\n\
+echo "[DEBUG] Starting PostgreSQL..."\n\
+su postgres -c "pg_ctl -D $PGDATA -l /var/log/postgresql/logfile start"\n\
+\n\
+echo "[DEBUG] Waiting for PostgreSQL to start..."\n\
+until su postgres -c "pg_isready -h localhost"; do\n\
+  echo "[DEBUG] PostgreSQL is unavailable - sleeping"\n\
   sleep 1\n\
 done\n\
-su postgres -c "psql -c \\"ALTER USER postgres WITH PASSWORD '\''password'\'';\\""\n\
-pnpm start:migrate' > /app/start.sh && chmod +x /app/start.sh
+\n\
+echo "[DEBUG] PostgreSQL is up - setting password"\n\
+su postgres -c "psql -h localhost -c \\"ALTER USER postgres WITH PASSWORD '\''password'\'';\\""\n\
+\n\
+echo "[DEBUG] Starting application..."\n\
+exec pnpm start:migrate' > /app/start.sh && chmod +x /app/start.sh
+
+# Create log directory
+RUN mkdir -p /var/log/postgresql && chown postgres:postgres /var/log/postgresql
 
 EXPOSE 3000 5432
 
