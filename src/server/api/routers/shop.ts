@@ -45,15 +45,17 @@ export const shopRouter = createTRPCRouter({
           try {
             if (i.instantBuy) {
               logWithTime("[SHOP] Creating invoice link for product", { productId: i.id });
+              const productName = i.name || 'Unnamed product';
+              const productDescription = i.description || productName;
               const link = await bot.telegram.createInvoiceLink({
-                title: i.name,
-                description: i.description || i.name,
+                title: productName,
+                description: productDescription,
                 payload: `${i.id}-${ctx.user.id}`,
                 provider_token: "",
                 currency: "XTR",
                 prices: [
                   {
-                    label: i.name,
+                    label: productName,
                     amount: i.price
                   }
                 ]
