@@ -106,7 +106,13 @@ export function CartDropdown() {
               )}
             >
               <CreditCard className="mr-2 h-4 w-4" />
-              Buy now
+              Pay ⭐ {cart
+                ?.map(
+                  (item) =>
+                    (parseFloat(item.product.price) - parseFloat(item.product.discount)) *
+                    item.quantity,
+                )
+                .reduce((a, b) => a + b, 0)}
             </Link>
           </>
         ) : null}

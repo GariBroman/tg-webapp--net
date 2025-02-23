@@ -43,27 +43,24 @@ export const shopRouter = createTRPCRouter({
       const itemsWithLinks = await Promise.all(
         allProducts.map(async (i) => {
           try {
-            if (i.instantBuy) {
-              logWithTime("[SHOP] Creating invoice link for product", { productId: i.id });
-              const productName = i.name ?? 'Unnamed product';
-              const productDescription = i.description ?? productName;
-              const link = await bot.telegram.createInvoiceLink({
-                title: productName,
-                description: productDescription,
-                payload: `${i.id}-${ctx.user.id}`,
-                provider_token: "",
-                currency: "XTR",
-                prices: [
-                  {
-                    label: productName,
-                    amount: Math.round(parseFloat(i.price))
-                  }
-                ]
-              });
-              logWithTime("[SHOP] Invoice link created successfully", { productId: i.id, link });
-              return { ...i, link };
-            }
-            return i;
+            logWithTime("[SHOP] Creating invoice link for product", { productId: i.id });
+            const productName = i.name ?? 'Unnamed product';
+            const productDescription = i.description ?? productName;
+            const link = await bot.telegram.createInvoiceLink({
+              title: productName,
+              description: productDescription,
+              payload: `${i.id}-${ctx.user.id}`,
+              provider_token: "",
+              currency: "XTR",
+              prices: [
+                {
+                  label: productName,
+                  amount: Math.round(parseFloat(i.price))
+                }
+              ]
+            });
+            logWithTime("[SHOP] Invoice link created successfully", { productId: i.id, link });
+            return { ...i, link };
           } catch (error) {
             logWithTime("[SHOP] Error creating invoice link", { productId: i.id, error });
             return i;
@@ -182,7 +179,6 @@ export const shopRouter = createTRPCRouter({
         return null;
       }
 
-      console.log(cart);
       const user = cart[0]?.user;
 
       if (!user) {
@@ -192,22 +188,24 @@ export const shopRouter = createTRPCRouter({
         });
       }
 
+      const totalAmount = Math.round(cart.reduce(
+        (acc, i) =>
+          acc + (parseFloat(i.product.price) - parseFloat(i.product.discount)) * i.quantity,
+        0,
+      ));
+
       const invoiceLink = await bot.telegram.createInvoiceLink({
         currency: "XTR",
-        payload: `${user.telegramId}-1`,
+        payload: `cart-${user.telegramId}-${Date.now()}`,
         provider_token: "",
         prices: [
           {
-            label: `Purchase `,
-            amount: Math.round(cart.reduce(
-              (acc, i) =>
-                acc + (parseFloat(i.product.price) - parseFloat(i.product.discount)) * i.quantity,
-              0,
-            )),
+            label: `Cart Total`,
+            amount: totalAmount,
           },
         ],
-        title: `Purchase ${cart.length} item(s) in shop`,
-        description: `Purchase ${cart.map((i) => i.product.name).join(", ")}`,
+        title: `Purchase ${cart.length} item(s)`,
+        description: `Items: ${cart.map((i) => `${i.product.name} (x${i.quantity})`).join(", ")}`,
       });
 
       return invoiceLink;
