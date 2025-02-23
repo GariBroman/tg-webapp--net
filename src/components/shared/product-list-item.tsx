@@ -226,7 +226,7 @@ const ProductListItem = ({ product, single }: ProductListItemProps) => {
           <p className="text-lg font-medium text-muted-foreground">
             ⭐ {formatPrice((parseFloat(product.price) - parseFloat(product.discount)).toString())}
           </p>
-          {product.discount > 0 && (
+          {parseFloat(product.discount) > 0 && (
             <p className="ml-2 rounded-md bg-red-100 px-2 py-1 text-xs font-semibold text-red-500 line-through">
               {formatPrice(product.price)}
             </p>
