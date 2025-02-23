@@ -172,7 +172,9 @@ const chekOrCreateUser = async (
     user = await db
       .insert(users)
       .values({
+        id: webcrypto.randomUUID(),
         telegramId: webAppUser.id.toString(),
+        chatId: webAppUser.id.toString(),
         name: `${webAppUser.first_name} ${webAppUser.last_name}`.trim(),
         image: webAppUser.photo_url,
       })
