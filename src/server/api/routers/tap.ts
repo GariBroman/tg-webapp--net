@@ -29,7 +29,7 @@ export const tapRouter = createTRPCRouter({
       prices: [
         {
           label: `Purchase 1000 taps`,
-          amount: parseFloat(i.price),
+          amount: 100,
         },
       ],
       title: `Purchase 1000 taps`,

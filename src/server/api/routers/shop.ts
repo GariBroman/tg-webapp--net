@@ -56,7 +56,7 @@ export const shopRouter = createTRPCRouter({
                 prices: [
                   {
                     label: productName,
-                    amount: i.price
+                    amount: Math.round(parseFloat(i.price) * 100)
                   }
                 ]
               });
@@ -199,11 +199,11 @@ export const shopRouter = createTRPCRouter({
         prices: [
           {
             label: `Purchase `,
-            amount: cart.reduce(
+            amount: Math.round(cart.reduce(
               (acc, i) =>
                 acc + (parseFloat(i.product.price) - parseFloat(i.product.discount)) * i.quantity,
               0,
-            ),
+            ) * 100),
           },
         ],
         title: `Purchase ${cart.length} item(s) in shop`,
