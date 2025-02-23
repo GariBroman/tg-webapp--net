@@ -7,7 +7,7 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
+    DATABASE_URL: z.string(),
     TELEGRAM_BOT_TOKEN: z.string(),
     PAYMENT_TOKEN: z.string().optional(),
     ADMIN_TELEGRAM_ID: z.string(),

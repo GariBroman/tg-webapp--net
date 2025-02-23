@@ -4,18 +4,8 @@ services:
   app:
     build:
       context: .
-      args:
-        - DATABASE_URL=postgresql://postgres:password@postgres:5432/postgres
-        - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-        - ADMIN_TELEGRAM_ID=${ADMIN_TELEGRAM_ID}
-        - NEXT_PUBLIC_POSTHOG_KEY=${NEXT_PUBLIC_POSTHOG_KEY}
-        - NEXT_PUBLIC_POSTHOG_HOST=${NEXT_PUBLIC_POSTHOG_HOST}
     ports:
       - "3000:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:password@postgres:5432/postgres
