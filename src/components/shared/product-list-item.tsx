@@ -120,17 +120,88 @@ const ProductItemActions: React.FC<{
 
   return (
     <div className="mt-2 flex items-center gap-2">
-      <Button
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          return addToCart.mutate({ productId: product.id, quantity: 1 });
-        }}
-        disabled={product.stock === 0}
-        className={cn(buttonVariants({ variant: "default" }), "w-full")}
-      >
-        Instant Buy
-      </Button>
+      {cartItem ? (
+        <>
+          {cartItem.quantity > 1 ? (
+            <Button
+              isLoading={updateCartItem.isPending}
+              variant="secondary"
+              size="icon"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return updateCartItem.mutate({
+                  id: product.id,
+                  quantity: cartItem.quantity - 1,
+                });
+              }}
+            >
+              <Minus className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              isLoading={removeFromCart.isPending}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return removeFromCart.mutate(product.id);
+              }}
+              variant="secondary"
+              size="icon"
+            >
+              <Trash className="h-4 w-4" />
+            </Button>
+          )}
+          <div className="flex items-center justify-center">
+            <p className="px-1 text-center text-lg font-medium text-muted-foreground">
+              {cartItem.quantity}
+            </p>
+          </div>
+          <Button
+            isLoading={updateCartItem.isPending}
+            size="icon"
+            variant="secondary"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              return updateCartItem.mutate({
+                id: product.id,
+                quantity: cartItem.quantity + 1,
+              });
+            }}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </>
+      ) : (
+        <div className="flex w-full flex-col items-center gap-2">
+          {product.link && product.stock === 999999 ? (
+            <Button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return (window.location.href = product.link ?? "");
+              }}
+              className={cn(buttonVariants({ variant: "default" }), "w-full")}
+            >
+              Instant Buy ⭐ {formatPrice(product.price)}
+            </Button>
+          ) : (
+            <Button
+              isLoading={addToCart.isPending}
+              disabled={product.stock === 0}
+              className="w-full px-4"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                return addToCart.mutate({ productId: product.id, quantity: 1 });
+              }}
+            >
+              Add to cart
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
