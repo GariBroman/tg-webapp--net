@@ -11,6 +11,7 @@ import { ThemeProvider } from "~/components/utils/theme-provider";
 import { HydrateClient } from "~/trpc/server";
 import GeneralLayout from "~/components/layouts/general-layout";
 import { CSPostHogProvider } from "./providers";
+import { TonConnectProvider } from "~/providers/ton-connect-provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -45,11 +46,13 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <TRPCReactProvider>
-              <HydrateClient>
-                <GeneralLayout>{children}</GeneralLayout>
-              </HydrateClient>
-            </TRPCReactProvider>
+            <TonConnectProvider>
+              <TRPCReactProvider>
+                <HydrateClient>
+                  <GeneralLayout>{children}</GeneralLayout>
+                </HydrateClient>
+              </TRPCReactProvider>
+            </TonConnectProvider>
             <Toaster />
             <TailwindIndicator />
           </ThemeProvider>

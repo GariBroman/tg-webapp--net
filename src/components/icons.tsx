@@ -16,14 +16,36 @@ export const Icons = {
   // laptop: Laptop,
   // twitter: Twitter,
   logo: (props: LucideProps) => (
-    <Image
-      width={32}
-      height={32}
-      alt="logo"
-      src="/img/logo.png"
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-      className={cn("rounded-md", props.className)}
-    />
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="M12 2L2 7L12 12L22 7L12 2Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2 17L12 22L22 17"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2 12L12 17L22 12"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   ),
   gitHub: (props: LucideProps) => (
     <svg viewBox="0 0 438.549 438.549" {...props}>
@@ -41,7 +63,7 @@ export const Icons = {
       />
     </svg>
   ),
-  spinner: (props: IconProps) => (
+  spinner: (props: LucideProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="24"
@@ -55,6 +77,26 @@ export const Icons = {
       {...props}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+    </svg>
+  ),
+  pickaxe: (props: LucideProps) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M14 10L4.5 20.5" />
+      <path d="M14 10l-4-4" />
+      <path d="M14 10l8-8" />
+      <path d="M14 10l3 3" />
+      <path d="M5 20l-1 1" />
     </svg>
   ),
 };

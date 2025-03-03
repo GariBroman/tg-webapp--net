@@ -1,0 +1,19 @@
+{
+  "url": "https://tg-webapp-mir.loca.lt",
+  "name": "MyMirPiramida",
+  "iconUrl": "https://tg-webapp-mir.loca.lt/icon.png",
+  "termsOfUseUrl": "https://tg-webapp-mir.loca.lt/terms",
+  "privacyPolicyUrl": "https://tg-webapp-mir.loca.lt/privacy",
+  "manifestVersion": "0.1",
+  "types": [
+    "ton_addr",
+    "ton_proof"
+  ],
+  "universalUrl": "https://tg-webapp-mir.loca.lt",
+  "items": [
+    {
+      "name": "ton_proxy",
+      "url": "https://tg-webapp-mir.loca.lt"
+    }
+  ]
+} 

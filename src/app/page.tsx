@@ -1,84 +1,116 @@
 "use client";
 
-import useTelegramInitData from "~/hooks/use-telegram-init-data";
-
-import * as React from "react";
+import React, { useEffect } from "react";
 import { api } from "~/trpc/react";
-import { Skeleton } from "~/components/ui/skeleton";
-import DefaultError from "~/components/layouts/error-page";
-import ProductListItem from "~/components/shared/product-list-item";
-import { Badge } from "~/components/ui/badge";
+import { useDebounce } from "@uidotdev/usehooks";
+import { Button, buttonVariants } from "~/components/ui/button";
+import Link from "next/link";
+import { cn } from "~/lib/utils";
+import { PlusCircle } from "lucide-react";
+import useTelegramInitData from "~/hooks/use-telegram-init-data";
+import { MiningHeader } from "~/components/layouts/mining-header";
 
 export default function Home() {
-  const { data } = api.tg.getUser.useQuery();
   const { user } = useTelegramInitData();
 
   return (
     <>
-      <h1 className="scroll-m-20 text-3xl font-extrabold">
-        Welcome, {user?.first_name}
-      </h1>
+      <MiningHeader />
+      <div className="mb-6">
+        <h1 className="scroll-m-20 text-3xl font-extrabold">
+          Welcome, {user?.first_name}
+        </h1>
+        <p className="text-muted-foreground">
+          Майните и зарабатывайте криптовалюту
+        </p>
+      </div>
 
-      {!!data?.activatedCodes?.length && (
-        <div className="flex flex-col gap-2">
-          <h2 className="scroll-m-20 text-sm font-light">
-            You have active codes
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {data?.activatedCodes?.map((code) => {
-              return (
-                <Badge variant="secondary" className="" key={code}>
-                  {code}
-                </Badge>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <ProductList />
+      <MiningComponent />
     </>
   );
 }
 
-const ProductList = () => {
+const MiningComponent = () => {
+  const utils = api.useUtils();
   const { data: user } = api.tg.getUser.useQuery();
-  const { data, isLoading } = api.shop.products.useQuery();
+  const { data: topupLink } = api.tap.getTopupLink.useQuery();
 
-  if (isLoading)
-    return (
-      <div className="grid grid-cols-2 gap-4 pt-4">
-        <Skeleton className="h-56 w-full" />
-        <Skeleton className="h-56 w-full" />
-        <Skeleton className="h-56 w-full" />
-        <Skeleton className="h-56 w-full" />
-      </div>
-    );
+  const { mutate: tap } = api.tap.add.useMutation({
+    onMutate: async (variables) => {
+      await utils.tg.getUser.cancel();
+      const previousUser = utils.tg.getUser.getData();
+      if (previousUser) {
+        utils.tg.getUser.setData(undefined, {
+          ...previousUser,
+          tapCount: previousUser.tapCount + 1,
+        });
+      }
+      return { previousUser };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousUser) {
+        utils.tg.getUser.setData(undefined, context.previousUser);
+      }
+    },
+  });
 
-  if (!data) return <DefaultError error={{ message: "No products" }} />;
+  const debouncedCount = useDebounce(user?.tapCount, 500);
 
-  if (data.length === 0) return <div>No products</div>;
+  useEffect(() => {
+    if (debouncedCount) {
+      void utils.tap.getLeaderboard.invalidate();
+      void utils.tg.getUser.invalidate();
+    }
+  }, [debouncedCount, utils]);
+
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {data.map((product) => {
-        return <ProductListItem key={product.id} product={product} />;
-      })}
+    <div>
+      <Link
+        href={topupLink ?? ""}
+        className={cn(
+          buttonVariants({ size: "sm", variant: "outline" }),
+          "mt-2 w-full"
+        )}
+      >
+        <PlusCircle className="mr-2 h-4 w-4" /> Buy Energy
+      </Link>
 
-      {user?.telegramId && (
-        <div>
-          <h2>Your referral link</h2>
-          <p
-            onClick={() => {
-              void navigator.clipboard.writeText(
-                `t.me/ffmemeswebappstagingbot/sample?startapp=${user?.telegramId}`,
-              );
-            }}
-            className="cursor-pointer text-sm text-muted-foreground active:scale-95"
-          >
-            {`t.me/ffmemeswebappstagingbot/sample?startapp=${user?.telegramId}`}
-          </p>
+      <div className="relative mt-8 flex h-[30vh] items-center justify-center">
+        <div
+          onClick={() => tap()}
+          className="flex aspect-square h-full cursor-pointer select-none items-center justify-center rounded-full bg-gradient-to-b from-blue-500 to-blue-700 shadow-xl transition-all active:scale-90"
+        >
+          <div className="select-none text-2xl font-bold text-white">
+            {user?.tapCount ?? "N/A"}
+          </div>
         </div>
-      )}
+      </div>
+
+      <div className="mt-8 text-center text-2xl font-bold">Leaderboard</div>
+      <Leaderboard />
+    </div>
+  );
+};
+
+const Leaderboard = () => {
+  const { data } = api.tg.getUser.useQuery();
+  const { data: leaderboard } = api.tap.getLeaderboard.useQuery(undefined, {
+    refetchInterval: 1000,
+  });
+
+  return (
+    <div className="mt-4 flex flex-col gap-2">
+      {leaderboard?.map((user) => {
+        const isCurrentUser = user.id === data?.id;
+        return (
+          <div key={user.id} className="flex items-center justify-between">
+            <p className="text-lg font-semibold">{user.name}</p>
+            <p className="text-lg font-medium">
+              {isCurrentUser ? data?.tapCount : user.tapCount}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 };

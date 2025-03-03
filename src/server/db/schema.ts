@@ -32,6 +32,7 @@ export const users = createTable("user", {
   }).default(sql`CURRENT_TIMESTAMP`),
   image: varchar("image", { length: 255 }),
   tapCount: integer("tap_count").notNull().default(0),
+  karma: integer("karma").notNull().default(0),
   referralCode: varchar("referral_code", { length: 255 }),
   referralCount: integer("referral_count").notNull().default(0),
   activatedCodes: json("activated_codes").$type<string[]>(),
